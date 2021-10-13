@@ -2,44 +2,44 @@ const menu = [
 	{
 		name: '飞线图',
 		path: '',
-		key: '1',
+		key: 'sub1',
 		children: [
 			{
 				name: 'data-view飞线图',
-				path: '',
-				key: '1-1',
+				path: '/home/dvFlylines',
+				key: '/home/dvFlylines',
 				children: []
 			},
 			{
 				name: 'echarts飞线图',
-				path: '',
-				key: '1-2',
+				path: '/home/etFlyLines',
+				key: '/home/etFlyLines',
 				children: []
 			}
 		]
 	},
 	{
 		name: '表单组件',
-		path: '',
-		key: '2',
+		path: '/home/customForm',
+		key: '/home/customForm',
 		children: []
 	},
 	{
 		name: '表格组件',
-		path: '',
-		key: '3',
+		path: '/home/customTable',
+		key: '/home/customTable',
 		children: []
 	},
 	{
 		name: '组织架构组件',
-		path: '',
-		key: '4',
+		path: '/home/orgStructure',
+		key: '/home/orgStructure',
 		children: []
 	},
 	{
 		name: '流程图组件',
-		path: '',
-		key: '5',
+		path: '/home/flowChart',
+		key: '/home/flowChart',
 		children: []
 	}
 ]

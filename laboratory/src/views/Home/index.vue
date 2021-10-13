@@ -4,13 +4,8 @@
 		.home-body
 			.home-body-aside
 				AsideMenu(:menuData="menuData")
-					//- a-menu-item(key="1")
-					//- 	a-icon(type="pie-chart")
-					//- 	span 表单组件
-					//- a-menu-item(key="2")
-					//- 	a-icon(type="desktop")
-					//- 	span 表格组件
 			.home-body-content
+				router-view
 </template>
 
 <script>

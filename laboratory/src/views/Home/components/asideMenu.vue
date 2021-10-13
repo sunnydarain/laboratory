@@ -7,14 +7,20 @@
 				default: null
 			}
 		},
-		mounted() {
-			console.log(this.menuData, 'menuData')
+		data() {
+			return {
+				currentPath: []
+			}
+		},
+		created() {
+			// console.log(this.$route.path)
+			this.currentPath = [this.$route.path]
 		},
 		methods: {
 			apendMenuItem(item) {
 				if(Object.is(item.children.length, 0)) {
 					return (
-						<a-menu-item key={item.key}>
+						<a-menu-item key={item.key} onClick={() => this.itemHandle(item.path)}>
 							<a-icon type="desktop"></a-icon>
 							<span>{item.name}</span>
 						</a-menu-item>
@@ -30,10 +36,13 @@
 						</a-sub-menu>
 					)
 				}
+			},
+			itemHandle(path) {
+				this.$router.push({path: path})
 			}
 		},
 		render() {
-			return (<a-menu default-selected-keys={['1']} default-open-keys={['sub1']} mode="inline" theme="dark" inline-collapsed={false}>
+			return (<a-menu default-selected-keys={this.currentPath} default-open-keys={['sub1']} mode="inline" theme="dark" inline-collapsed={false}>
 				{
 					this.menuData.map(v => this.apendMenuItem(v))
 				}
