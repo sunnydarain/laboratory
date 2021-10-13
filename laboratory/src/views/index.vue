@@ -1,15 +1,10 @@
 <template lang="pug">
-    <div>
-
-    </div>
+    .container
+        <router-view></router-view>
 </template>
 
-<script>
-    export default {
-        
-    }
-</script>
-
 <style lang="stylus" scoped>
-
+.container
+    width 100%
+    height 100%
 </style>
