@@ -61,6 +61,7 @@ export default {
     // console.log('cInput')
   },
   methods: {
+    // 判断布局
     judgeLayout() {
       if(Object.is(this.layout, 'horizontal')) {
         return (

@@ -4,6 +4,7 @@
 			a-row(v-for="(v, index) in config",:key="index")
 				template(v-for="item in v.content")
 					CInput(v-if="Object.is(item.itemType, 'a-input')",:ref="item.field",@getValue="getInputValue($event, item.field)",@getValidate="getValidate",:value="form[item.field]",:span="item.span",:layout="item.layout",:offset="item.offset",:labelName="item.labelName",:required="item.required",:validateTrigger="item.validateTrigger",:rules="item.rules")
+					CSelect(v-if="Object.is(item.itemType, 'a-select')",:ref="item.field",@getValue="getInputValue($event, item.field)",@getValidate="getValidate",:value="form[item.field]",:span="item.span",:layout="item.layout",:offset="item.offset",:labelName="item.labelName",:required="item.required",:validateTrigger="item.validateTrigger",:rules="item.rules")
 			a-row(type="flex",justify="center")
 				a-button(type="primary",@click="validateForm") 校验表单
 </template>
@@ -13,7 +14,9 @@
 	export default {
 		components: {
 			// 输入框组件
-			CInput: () => import('./components/cInput.vue')
+			CInput: () => import('./components/cInput.vue'),
+			// 选择器组件
+			CSelect: () => import('./components/cSelect.vue')
 		},
 		data() {
 			return {
@@ -21,7 +24,8 @@
 					zdmc1: '',
 					zdmc2: 'world',
 					zdmc3: '',
-					zdmc4: ''
+					zdmc4: '',
+					zdmc5: ''
 				},
 				config: config,
 				validateResult: true

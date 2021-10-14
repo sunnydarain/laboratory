@@ -44,10 +44,10 @@ export default [
         coordinate: [1,0],
         required: false,
         validateTrigger: false,
-        rules: [{required: false, msg: '字段名称1不能为空'}],
+        rules: [{required: false, msg: '字段名称3不能为空'}],
       },
       {
-        itemType: 'a-input',
+        itemType: 'a-select',
         span: 12,
         layout: 'horizontal',
         offset: 6,
@@ -55,9 +55,27 @@ export default [
         field: 'zdmc4',
         value: '',
         coordinate: [1,1],
+        required: true,
+        validateTrigger: true,
+        rules: [{required: true, msg: '字段名称4不能为空'}]
+      }
+    ]
+  },
+  {
+    colNum: 2,
+    content: [
+      {
+        itemType: 'a-select',
+        span: 12,
+        layout: 'horizontal',
+        offset: 6,
+        labelName: '字段名称5',
+        field: 'zdmc5',
+        value: '',
+        coordinate: [2,0],
         required: false,
         validateTrigger: false,
-        rules: [{required: false, msg: '字段名称2不能为空'}]
+        rules: [{required: false, msg: '字段名称4不能为空'}]
       }
     ]
   },
