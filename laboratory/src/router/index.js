@@ -62,7 +62,7 @@ const router = new VueRouter({
 
 // 防止重复点击错误
 const originalPush = VueRouter.prototype.push
-VueRouter.prototype.replace = function replace(location) {
+VueRouter.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err => err)
 }
 
