@@ -1,50 +1,15 @@
 <script>
 export default {
   props: {
-    // 不显示*号
-    notShowStar: {
-      type: Boolean,
-      default: false
-    },
-    // 控制栅格大小
-    span: {
-      type: Number,
-      default: 12
-    },
-    // 控制栅格内部布局
-    layout: {
-      type: String,
-      default: 'horizontal',// horizontal vertical
-    },
-    // 横向结构的偏移量 
-    offset: {
-      type: Number,
-      default: 6
-    },
-    // 标签名称
-    labelName: {
-      type: String,
-      default: '测试标签：'
-    },
     // 数据
     value: {
       type: String||Number,
       default: ''
     },
-    // 必填选项
-    required: {
-      type: Boolean,
-      default: false
-    },
-    // 触发校验
-    validateTrigger: {
-      type: Boolean,
-      default: false
-    },
-    // 校验规则
-    rules: {
-      type: Array,
-      default: () => [{required: true, msg: '此输入框不能为空'}]
+    // 配置选项
+    config: {
+      type: Object,
+      required: true
     }
   },
   data() {
@@ -63,20 +28,20 @@ export default {
   methods: {
     // 判断布局
     judgeLayout() {
-      if(Object.is(this.layout, 'horizontal')) {
+      if(Object.is(this.config.layout, 'horizontal')) {
         return (
           <a-row type="flex" align="middle">
-            <a-col span={this.offset}>
+            <a-col span={this.config.offset}>
               <a-row type="flex" justify="end" align="middle">
                 {this.isAsterisk()}
                 <a-col>
                   <p class="label">
-                    {this.labelName}
+                    {this.config.labelName}
                   </p>
                 </a-col>
               </a-row>
             </a-col>
-            <a-col class={(this.validateTrigger && this.isShowFailure) && 'validate-failure'} span={24-this.offset}>
+            <a-col class={(this.config.validateTrigger && this.isShowFailure) && 'validate-failure'} span={24-this.config.offset}>
               <a-input value={this.value} onBlur={() => this.validate()} onChange={(e) => this.valueChange(e)}></a-input>
             </a-col>
           </a-row>
@@ -85,14 +50,14 @@ export default {
     },
     // 校验
     validate() {
-      if(this.validateTrigger) {
+      if(this.config.validateTrigger) {
         this.validateSuccess = true
         this.isShowFailure = false
         this.failureWord = ''
         try {
-          this.rules.forEach(v => {
+          this.config.rules.forEach(v => {
             if(v.required) {
-              if(this.value.length === 0) {
+              if([[],'',0,null,undefined].includes(this.value)) {
                 throw new Error(v.msg)
               }
             }
@@ -109,13 +74,14 @@ export default {
       this.$emit('getValidate', this.validateSuccess)
     },
     // 数据改变
-    valueChange(e) {
-      this.$emit('getValue', e.target.value)
+    async valueChange(e) {
+      await this.$emit('getValue', e.target.value)
+      await this.validate()
     },
     // 是否显示*号
     isAsterisk() {
       // 校验成功
-      if(!this.required || this.notShowStar) {
+      if(!this.config.required || this.config.notShowStar) {
         return (
           <a-col></a-col>
         )
@@ -128,12 +94,12 @@ export default {
   },
   render() {
     return (
-      <a-col span={this.span}>
+      <a-col span={this.config.span}>
         {
           this.judgeLayout()
         }
         <a-row>
-          <a-col span={24-this.offset} offset={this.offset}>
+          <a-col span={24-this.config.offset} offset={this.config.offset}>
             <p class="validate-failure-text">{this.failureWord}</p>
           </a-col>
         </a-row>

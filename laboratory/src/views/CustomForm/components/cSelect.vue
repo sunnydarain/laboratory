@@ -1,50 +1,16 @@
 <script>
 export default {
   props: {
-    // 不显示*号
-    notShowStar: {
-      type: Boolean,
-      default: false
-    },
-    // 控制栅格大小
-    span: {
-      type: Number,
-      default: 12
-    },
-    // 控制栅格内部布局
-    layout: {
-      type: String,
-      default: 'horizontal',// horizontal vertical
-    },
-    // 横向结构的偏移量 
-    offset: {
-      type: Number,
-      default: 6
-    },
-    // 标签名称
-    labelName: {
-      type: String,
-      default: '测试标签：'
-    },
+    // 选择器类型（common: 普通类型，treeSig: 树单选，treeMulti: 树多选）
     // 数据
     value: {
-      type: String,
+      type: String||Array,
       default: ''
     },
-    // 必填选项
-    required: {
-      type: Boolean,
-      default: false
-    },
-    // 触发校验
-    validateTrigger: {
-      type: Boolean,
-      default: false
-    },
-    // 校验规则
-    rules: {
-      type: Array,
-      default: () => [{required: true, msg: '此选择框不能为空'}]
+    // 配置选项
+    config: {
+      type: Object,
+      required: true
     }
   },
   data() {
@@ -60,7 +26,32 @@ export default {
         {name: 'xx2',value: '2'},
         {name: 'xx3',value: '3'},
         {name: 'xx4',value: '4'},
-      ]
+      ],
+      treeOptions: {
+        id: '1',
+        name: 'tree',
+        value: 'all',
+        data: [
+          {
+            id: '2',
+            name: 'tree1',
+            value: '0',
+            data: [
+              {id: '3',name: 'xx1',value: '1'},
+              {id: '4',name: 'xx2',value: '2'},
+            ]
+          },
+          {
+            id: '5',
+            name: 'tree2',
+            value: '3',
+            data: [
+              {id: '6',name: 'xx3',value: '4'},
+              {id: '7',name: 'xx4',value: '5'},
+            ]
+          }
+        ]
+      }
     }
   },
   mounted() {
@@ -69,40 +60,70 @@ export default {
   methods: {
     // 判断布局
     judgeLayout() {
-      if(Object.is(this.layout, 'horizontal')) {
-        return (
-          <a-row type="flex" align="middle">
-            <a-col span={this.offset}>
-              <a-row type="flex" justify="end" align="middle">
-                {this.isAsterisk()}
-                <a-col>
-                  <p class="label">
-                    {this.labelName}
-                  </p>
-                </a-col>
-              </a-row>
-            </a-col>
-            <a-col class={(this.validateTrigger && this.isShowFailure) && 'validate-failure'} span={24-this.offset}>
-              <a-select value={this.value} onBlur={() => this.validate()} onChange={(e) => this.valueChange(e)}>
-                {
-                  this.options.map(v => (<a-select-option key={v.value}>{v.name}</a-select-option>))
-                }
-              </a-select>
-            </a-col>
-          </a-row>
-        )
+      if(Object.is(this.config.layout, 'horizontal')) {
+        if(Object.is(this.config.sType, 'common')) {
+          return (
+            <a-row type="flex" align="middle">
+              <a-col span={this.config.offset}>
+                <a-row type="flex" justify="end" align="middle">
+                  {this.isAsterisk()}
+                  <a-col>
+                    <p class="label">
+                      {this.config.labelName}
+                    </p>
+                  </a-col>
+                </a-row>
+              </a-col>
+              <a-col class={(this.config.validateTrigger && this.isShowFailure) && 'validate-failure'} span={24-this.config.offset}>
+                <a-select value={this.value} onBlur={() => this.validate()} onChange={(e) => this.valueChange(e)}>
+                  {
+                    this.options.map(v => (<a-select-option key={v.value}>{v.name}</a-select-option>))
+                  }
+                </a-select>
+              </a-col>
+            </a-row>
+          )
+        }
+        if(Object.is(this.config.sType, 'treeSig')) {
+          return (
+            <a-row type="flex" align="middle">
+              <a-col span={this.config.offset}>
+                <a-row type="flex" justify="end" align="middle">
+                  {this.isAsterisk()}
+                  <a-col>
+                    <p class="label">
+                      {this.config.labelName}
+                    </p>
+                  </a-col>
+                </a-row>
+              </a-col>
+              <a-col class={(this.config.validateTrigger && this.isShowFailure) && 'validate-failure'} span={24-this.config.offset}>
+                <a-tree-select value={this.value} onBlur={() => this.validate()} onChange={(e) => this.valueChange(e)}>
+                  <a-tree-select-node key={this.treeOptions.id} value={this.treeOptions.value} title={this.treeOptions.name}>
+                    {
+                      this.treeOptions.data.map(v => this.ergodicTreeData(v))
+                    }
+                  </a-tree-select-node>
+                </a-tree-select>
+              </a-col>
+            </a-row>
+          )
+        }
+        if(Object.is(this.config.sType, 'treeMulti')) {
+          console.log(2)
+        }
       }
     },
     // 校验
     validate() {
-      if(this.validateTrigger) {
+      if(this.config.validateTrigger) {
         this.validateSuccess = true
         this.isShowFailure = false
         this.failureWord = ''
         try {
-          this.rules.forEach(v => {
+          this.config.rules.forEach(v => {
             if(v.required) {
-              if(this.value.length === 0) {
+              if([[],'',0,{},null,undefined].includes(this.value)) {
                 throw new Error(v.msg)
               }
             }
@@ -119,13 +140,14 @@ export default {
       this.$emit('getValidate', this.validateSuccess)
     },
     // 数据改变
-    valueChange(e) {
-      this.$emit('getValue', e)
+    async valueChange(e) {
+      await this.$emit('getValue', e)
+      await this.validate()
     },
     // 是否显示*号
     isAsterisk() {
       // 校验成功
-      if(!this.required || this.notShowStar) {
+      if(!this.config.required || this.config.notShowStar) {
         return (
           <a-col></a-col>
         )
@@ -134,16 +156,33 @@ export default {
       return (
         <a-col><span class="validator">*</span></a-col>
       )
+    },
+    // 遍历树形数据
+    ergodicTreeData(item) {
+      if(!item.data) {
+        return (
+          <a-tree-select-node key={item.id} value={item.value} title={item.name}></a-tree-select-node>
+        )
+      }
+      if(item.data) {
+        return (
+          <a-tree-select-node key={item.id} value={item.value} title={item.name}>
+            {
+              item.data.map(v => this.ergodicTreeData(v))
+            }
+          </a-tree-select-node>
+        )
+      }
     }
   },
   render() {
     return (
-      <a-col span={this.span}>
+      <a-col span={this.config.span}>
         {
           this.judgeLayout()
         }
         <a-row>
-          <a-col span={24-this.offset} offset={this.offset}>
+          <a-col span={24-this.config.offset} offset={this.config.offset}>
             <p class="validate-failure-text">{this.failureWord}</p>
           </a-col>
         </a-row>
@@ -163,10 +202,10 @@ export default {
   font-size 14px
   margin-right 2px
 .validate-failure
-  /deep/ .ant-select
+  /deep/ .ant-select-selection
     border-color red!important
     box-shadow rgba(230,0,0,0.2)!important
-  /deep/ .ant-select:focus
+  /deep/ .ant-select-selection:focus
     border-color red!important
     box-shadow rgba(230,0,0,0.2)!important
 .validate-failure-text

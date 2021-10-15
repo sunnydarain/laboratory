@@ -3,8 +3,8 @@
 		.form-container
 			a-row(v-for="(v, index) in config",:key="index")
 				template(v-for="item in v.content")
-					CInput(v-if="Object.is(item.itemType, 'a-input')",:ref="item.field",@getValue="getInputValue($event, item.field)",@getValidate="getValidate",:value="form[item.field]",:span="item.span",:layout="item.layout",:offset="item.offset",:labelName="item.labelName",:required="item.required",:validateTrigger="item.validateTrigger",:rules="item.rules")
-					CSelect(v-if="Object.is(item.itemType, 'a-select')",:ref="item.field",@getValue="getInputValue($event, item.field)",@getValidate="getValidate",:value="form[item.field]",:span="item.span",:layout="item.layout",:offset="item.offset",:labelName="item.labelName",:required="item.required",:validateTrigger="item.validateTrigger",:rules="item.rules")
+					CInput(v-if="Object.is(item.itemType, 'a-input')",:ref="item.field",@getValue="getValue($event, item.field)",@getValidate="getValidate",:value="form[item.field]",:config="item.config")
+					CSelect(v-if="Object.is(item.itemType, 'a-select')",:ref="item.field",@getValue="getValue($event, item.field)",@getValidate="getValidate",:value="form[item.field]",:config="item.config")
 			a-row(type="flex",justify="center")
 				a-button(type="primary",@click="validateForm") 校验表单
 </template>
@@ -22,10 +22,8 @@
 			return {
 				form: {
 					zdmc1: '',
-					zdmc2: 'world',
+					zdmc2: '',
 					zdmc3: '',
-					zdmc4: '',
-					zdmc5: ''
 				},
 				config: config,
 				validateResult: true
@@ -51,7 +49,7 @@
 				console.log('校验表单结果', this.validateResult)
 			},
 			// 获取值
-			getInputValue(val, type) {
+			getValue(val, type) {
 				// console.log(val, type)
 				this.form[type] = val
 			},
